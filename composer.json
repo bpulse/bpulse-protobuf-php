@@ -1,7 +1,7 @@
 {
-    "name": "bpulse/bpulse-sdk-php",
-    "description": "Bpulse PHP Conector",
-    "license": "MIT",
+    "name": "bpulse/bpulse-protobuf-php",
+    "description": "Bpulse Protobuf Conector",
+    "license": "Apache",
     "version": "0.1.0",
     "keywords": ["bpulse"],
     "authors": [
@@ -11,8 +11,7 @@
         }
     ],
     "require": {
-        "protobuf-php/protobuf-plugin": "^0.1.3",
-        "guzzlehttp/guzzle": "^6.2"
+        "protobuf-php/protobuf-plugin": "^0.1.3"
     },
     "require-dev": {},
     "autoload": {
