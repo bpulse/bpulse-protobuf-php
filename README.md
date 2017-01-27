@@ -1,107 +1,84 @@
-# bpulse/bpulse-sdk-php
+# bpulse-protobuf-php
 
-This is a conector between any PHP based application subscribed to BPULSE Service and the PULSES COLLECTOR REST SERVICE. This README explains how to integrate the conector with the target client application, configuration parameters and how to use it.
+bpulse-protobuf-php is the model interface which bpulse relies on in order to send messages with pulses to the collector, it is a mandatory dependency of bpulse-sdk-php in order to compile it and send messages to the collector.
 
+## Requirements
 
-## REQUIREMENTS
+In order to build this project you need to install protoc on your machine, it is very important that you use specifically the 2.6.1 version otherwise the project might not compile.
 
-* protocol buffers compiler library (libprotoc)
+The instructions for each OS are the following:
 
-## INSTALLING
+### Windows
 
-The recommended way to install this connector is through Composer.
-
-Add to your composer.json
-
-```sh
-"require": {
-	"bpulse/bpulse-php-connector": "dev-master"
-}
-```
-
-run composer install
-
-After installing, you need to require Composer's autoloader:
+Use the provided distribution in this repository under /protobuf/windows/protoc-2.6.1-win32.rar unpack it wherever you want. Edit your environment variables adding one that points to the unpackaged folder like PROTOC_HOME
 
 ```sh
-require 'vendor/autoload.php';
+e.g. PROTOC_HOME=C:\software\protoc
 ```
 
-
-## STARTING YOUR APPLICATION
-
-the first thing you should to do is generate the PHP classes you'll need to send Pulses. To do this, you need to run the following command on bpulse-php-connector folder
+Then edit your PATH variable appending the new variable
 
 ```sh
-make build
+e.g. PATH=[other_variables];%PROTOC_HOME%
 ```
 
-The connector needs some configuration properties that indicate the client where to connect so you must provide a properties file, so to do that, append this config.json to your main folder
+You can check if the installation was ok by opening a terminal and executing the following command:
 
 ```sh
-{
-	"host": "http://[bpulse.host]/app.collector/collector/pulses:port",
-	"username": "collector@bpulse.com",
-	"password": "collector123"
-}
+protoc --version
 ```
 
+You should see this output:
 
-## USAGE
-
-The starting point are the BPulse\Entity classes and Bpulse\Rest\Connector class. Then use a combination of methods to build the pulses you want to send according to the Pulse Definition made in BPULSE, for example:
-
-```php
-//Add the namespaces
-
-use Bpulse\Entity\Pulse;
-use Bpulse\Entity\PulsesRQ;
-use Bpulse\Entity\Value;
-use Bpulse\Rest\Connector;
-
-
-//Generate Pulses
-
-$pulses= new PulsesRQ();
-$pulses->setVersion("1.0");
-$pulse= new Pulse();
-
-$pulse->setInstanceId("1");
-$pulse->setTypeId("bpulse_bpulse_processedPulses");
-$milliseconds = round(microtime(true) * 1000);
-$pulse->setTime($milliseconds);
-
-$value= new Value;
-$value->setName("nErrors");
-$value->addValues("1");
-$pulse->addValues($value);
-
-$value= new Value;
-$value->setName("nPulses");
-$value->addValues("19");
-$pulse->addValues($value);
-
-
-$value= new Value;
-$value->setName("rsInstance");
-$value->addValues("Angel");
-$pulse->addValues($value);
-
-$value= new Value;
-$value->setName("clientId");
-$value->addValues("demo");
-$pulse->addValues($value);
-
-$value= new Value;
-$value->setName("rsTime");
-$value->addValues("1200");
-$pulse->addValues($value);
-
-
-$pulses->addPulse($pulse);                         
-
-$connector= new Connector;
-
-
-$code=$connector->send($pulses); //This return the http response status code
+```sh
+libprotoc 2.6.1
 ```
+
+### Linux
+
+Use the provided distribution in this repository under /protobuf/linux/protobuf-2.6.1.tar.gz unpackit wherever you want.
+
+Note: At this point you should have installed the two linux packages mentioned above.
+
+Open a terminal and go to where you unpacked the file, then execute the following commands (one by one):
+
+```sh
+$ ./autogen.sh
+$ ./configure
+$ ./make
+$ ./make install
+```
+
+Note: The make install commad may require sudo
+
+After that, you can check if everything succeded by executin the command:
+
+```sh
+$ protoc --version
+```
+
+If you don't receive a message like:
+
+```sh
+libprotoc 2.6.1
+```
+
+Then execute the following:
+
+```sh
+$ sudo ldconfig
+```
+
+## Build
+
+Once you checked out the sources, in a terminal go to the bpulse-protobuf-php folder  and type
+
+```sh
+$ make build
+```
+
+It's done!, now you can use the bpulse-sdk-php
+
+## License
+
+The Bpulse Protobuf PHP is licensed under the Apache License 2.0. Details can be found in the LICENSE file.
